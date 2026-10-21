@@ -12,13 +12,18 @@ import orderRouter from "./routes/orderRoute.js";
 const app = express();
 const port = process.env.PORT || 4000;
 
-// Connect Database & Cloudinary
-connectDB();
+// Connect Cloudinary
 connectCloudinary();
 
 // Middlewares
 app.use(express.json());
 app.use(cors());
+
+// Ensure database is connected before handling any requests
+app.use(async (req, res, next) => {
+  await connectDB();
+  next();
+});
 
 // API Endpoints (mount both /api/... and /... for maximum compatibility)
 app.use("/api/user", userRouter);
