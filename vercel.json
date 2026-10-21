@@ -22,19 +22,19 @@
       }
     },
     {
-      "source": "/admin/(.*)",
+      "source": "/admin/:path*",
       "destination": {
         "service": "admin"
       }
     },
     {
-      "source": "/api/(.*)",
+      "source": "/api/:path*",
       "destination": {
         "service": "backend"
       }
     },
     {
-      "source": "/(.*)",
+      "source": "/:path*",
       "destination": {
         "service": "frontend"
       }
