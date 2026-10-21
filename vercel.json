@@ -29,10 +29,17 @@
       }
     },
     {
-      "source": "/admin/(favicon\\.svg|icons\\.svg)",
+      "source": "/admin/favicon.svg",
       "destination": {
         "service": "admin",
-        "path": "/$1"
+        "path": "/favicon.svg"
+      }
+    },
+    {
+      "source": "/admin/icons.svg",
+      "destination": {
+        "service": "admin",
+        "path": "/icons.svg"
       }
     },
     {
@@ -50,9 +57,31 @@
       }
     },
     {
+      "source": "/assets/(.*)",
+      "destination": {
+        "service": "frontend",
+        "path": "/assets/$1"
+      }
+    },
+    {
+      "source": "/favicon.svg",
+      "destination": {
+        "service": "frontend",
+        "path": "/favicon.svg"
+      }
+    },
+    {
+      "source": "/icons.svg",
+      "destination": {
+        "service": "frontend",
+        "path": "/icons.svg"
+      }
+    },
+    {
       "source": "/(.*)",
       "destination": {
-        "service": "frontend"
+        "service": "frontend",
+        "path": "/index.html"
       }
     }
   ]
