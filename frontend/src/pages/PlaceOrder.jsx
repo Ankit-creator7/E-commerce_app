@@ -51,15 +51,20 @@ const PlaceOrder = () => {
         }
       }
 
+      if(orderItems.length === 0){
+        toast.error("Your cart is empty");
+        return;
+      }
+
       let orderData = {
-        address: formData,
+        address: { ...formData, zipCode: formData.zipcode },
         items: orderItems,
         amount: getCartAmount() + delivery_fee,
       }
       switch(method){
 
         // Api calls for COD
-        case 'cod':
+        case 'cod': {
           const response = await axios.post(backendUrl + '/api/order/place', orderData, {headers: {token}});
           if(response.data.success){
             setCartItems({});
@@ -67,10 +72,10 @@ const PlaceOrder = () => {
           } else{
             toast.error(response.data.message);
           }
+          break;
+        }
 
-        break;
-
-        case 'stripe':
+        case 'stripe': {
           const stripeResponse = await axios.post(backendUrl + '/api/order/stripe', orderData, {headers: {token}});
           if(stripeResponse.data.success){
             const {session_url} = stripeResponse.data;
@@ -79,6 +84,12 @@ const PlaceOrder = () => {
             toast.error(stripeResponse.data.message);
           }
           break;
+        }
+
+        case 'razorpay': {
+          toast.info("Razorpay payment gateway is not yet available. Please use Cash on Delivery or Stripe.");
+          break;
+        }
 
         default:
           break;
@@ -86,7 +97,7 @@ const PlaceOrder = () => {
 
     } catch(error){
       console.error(error);
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || error.message);
     }
   }
   

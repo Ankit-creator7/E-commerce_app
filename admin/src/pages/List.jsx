@@ -19,7 +19,7 @@ const List = ({ token }) => {
 
     } catch (error) {
       console.error(error);
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || error.message);
     }
   }
 
@@ -36,7 +36,7 @@ const List = ({ token }) => {
       }
     } catch(error){
       console.error(error);
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || error.message);
     }
 
   }
@@ -57,7 +57,7 @@ const List = ({ token }) => {
           <b>Name</b>
           <b>Category</b>
           <b>Price</b>
-          <b class="text-center">Action</b>
+          <b className="text-center">Action</b>
 
         </div>
 

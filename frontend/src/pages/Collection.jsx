@@ -37,7 +37,13 @@ const Collection = () => {
     }
 
     if (category.length > 0) {
-      productsCopy = productsCopy.filter((item) => category.includes(item.category))
+      productsCopy = productsCopy.filter((item) => {
+        return category.some((cat) => {
+          if (cat === item.category) return true;
+          if ((cat === 'Hair Care' || cat === 'HairCare') && (item.category === 'HairCare' || item.category === 'Hair Care')) return true;
+          return false;
+        });
+      });
     }
 
     if (subCategory.length > 0) {
@@ -67,7 +73,7 @@ const Collection = () => {
 
   useEffect(() => {
     applyFilter()
-  }, [category, subCategory, products,search, showSearch,products])
+  }, [category, subCategory, products, search, showSearch])
 
   useEffect(() => {
     sortProduct()

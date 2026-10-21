@@ -20,6 +20,19 @@ const Add = ({ token }) => {
   const [variant, setVariant] = useState([]);
   const [bestseller, setBestseller] = useState(false);
 
+  const handleCategoryChange = (e) => {
+    const selectedCategory = e.target.value;
+    setCategory(selectedCategory);
+    setVariant([]);
+    if (selectedCategory === "Skincare") {
+      setSubcategory("Serum");
+    } else if (selectedCategory === "Makeup") {
+      setSubcategory("Lipstick");
+    } else if (selectedCategory === "HairCare") {
+      setSubcategory("Hair Oil");
+    }
+  };
+
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
@@ -50,7 +63,7 @@ const Add = ({ token }) => {
         setImage2(false);
         setImage3(false);
         setImage4(false);
-
+        setVariant([]);
       }
       else {
         toast.error(response.data.message);
@@ -59,7 +72,7 @@ const Add = ({ token }) => {
     }
     catch (error) {
       console.log(error);
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || error.message);
     }
   }
 
@@ -102,7 +115,7 @@ const Add = ({ token }) => {
 
         <div>
           <p className='mb-2'>Product category</p>
-          <select onChange={(e) => setCategory(e.target.value)} value={category} className='w-full px-3 py-2'>
+          <select onChange={handleCategoryChange} value={category} className='w-full px-3 py-2'>
             <option value="Skincare">Skincare</option>
             <option value="HairCare">HairCare</option>
             <option value="Makeup">Makeup</option>

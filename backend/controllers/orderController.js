@@ -105,16 +105,20 @@ const placeOrderStripe = async (req, res) => {
 //Verify Stripe
 const verifyStripe = async (req, res) => {
 
-    const { orderId, success, userId } = req.query;
+    const orderId = req.body?.orderId || req.query?.orderId;
+    const success = req.body?.success || req.query?.success;
+    const userId = req.body?.userId || req.query?.userId;
 
     try {
-        if (success === 'true') {
+        if (success === 'true' || success === true) {
             await orderModel.findByIdAndUpdate(orderId, { payment: true });
-            await userModel.findByIdAndUpdate(userId, { cartData: {} });
+            if (userId) {
+                await userModel.findByIdAndUpdate(userId, { cartData: {} });
+            }
             res.json({ success: true, message: 'Payment Successful' });
         } else {
-            await orderModel.findByIdAndUpdate(orderId);
-            res.json({ success: false, message: error.message });
+            await orderModel.findByIdAndDelete(orderId);
+            res.json({ success: false, message: 'Payment Cancelled or Failed' });
         }
     } catch (err) {
         console.log(err);
@@ -128,7 +132,7 @@ const verifyStripe = async (req, res) => {
 // Placing order using Razorpay method
 
 const placeOrderRazorpay = async (req, res) => {
-
+    res.json({ success: false, message: "Razorpay payment method is currently not configured." });
 }
 
 // All Orders data for Admin panel
@@ -178,5 +182,3 @@ const updateStatus = async (req, res) => {
 }
 
 export { verifyStripe, placeOrder, placeOrderStripe, placeOrderRazorpay, allOrders, userOrders, updateStatus }
-
-

@@ -8,45 +8,46 @@ import { toast } from 'react-toastify'
 
 const Verify = () => {
 
-
-    const {navigate,token,setCartItems,backendUrl} = useContext(ShopContext);
-    const [searchparams,setSearchparams] = useSearchParams();
+    const { navigate, token, setCartItems, backendUrl } = useContext(ShopContext);
+    const [searchparams] = useSearchParams();
 
     const success = searchparams.get("success");
     const orderId = searchparams.get("orderId");
 
     const verifyPayment = async () => {
-      try{
-        if(!token){
+      try {
+        if (!token) {
           return null;
         }
 
-        const response = await axios.post(backendUrl + '/api/verifyStripe', {success, orderId},{headers:{token}})
+        const response = await axios.post(
+          backendUrl + '/api/order/verifyStripe',
+          { success, orderId },
+          { headers: { token } }
+        );
 
-        if(response.data.success){
-          setCartItems([]);
-          navigate('/orders')
-        } else{
-          navigate('/cart')
+        if (response.data.success) {
+          setCartItems({});
+          navigate('/orders');
+        } else {
+          toast.error(response.data.message || 'Payment verification failed');
+          navigate('/cart');
         }
-          
-        
       } catch (error) {
         console.error(error);
-        toast.error(error.message);
+        toast.error(error.response?.data?.message || error.message);
       }
-
-    }
+    };
 
     useEffect(() => {
       verifyPayment();
-    },[token])
+    }, [token]);
+
     return (
-    <div>
+      <div className='min-h-[60vh] flex items-center justify-center'>
+        <p className='text-gray-500'>Verifying your payment, please wait...</p>
+      </div>
+    );
+};
 
-      
-    </div>
-  )
-}
-
-export default Verify
+export default Verify;

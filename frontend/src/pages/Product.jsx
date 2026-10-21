@@ -4,8 +4,6 @@ import { ShopContext } from '../context/ShopContext.jsx'
 import { assets } from '../assets/assets'
 import RelatedProducts from '../components/RelatedProducts.jsx'
 
-
-
 const Product = () => {
 
   const { productId } = useParams();
@@ -19,7 +17,7 @@ const Product = () => {
     products.map((item) => {
       if (item._id === productId) {
         setProductData(item);
-        setImage(item.image[0]);
+        setImage(item.image?.[0] || '');
         return null;
       }
     })
@@ -28,9 +26,9 @@ const Product = () => {
 
   useEffect(() => {
     fetchProductData();
-  }, [products,productId])
+  }, [products, productId])
 
-
+  const variants = productData ? (productData.variant || productData.sizes || []) : [];
 
   return productData ? (
     <div className='border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100'>
@@ -41,7 +39,7 @@ const Product = () => {
         <div className='flex-1 flex flex-col-reverse gap-3 sm:flex-row'>
           <div className='flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full'>
             {
-              productData.image.map((item, index) => (
+              productData.image && productData.image.map((item, index) => (
                 <img
                   onClick={() => setImage(item)}
                   src={item}
@@ -75,9 +73,9 @@ const Product = () => {
           <p className='mt-5 text-gray-500 md:w-4/5'>{productData.description}</p>
           <div className='flex flex-col gap-4 my-8'>
             <p>Select Variant</p>
-            <div className='flex gap-2'>
+            <div className='flex gap-2 flex-wrap'>
               {
-                productData.variant.map((item, index) => (
+                variants.map((item, index) => (
                   <button onClick={() => setSize(item)} className={`border py-2 px-4 bg-gray-100 ${size === item ? 'border-orange-500' : ''}`} key={index} >{item}</button>
                 ))
               }
