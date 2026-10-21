@@ -7,6 +7,7 @@ import userRouter from "./routes/userRoute.js";
 import productRouter from "./routes/productRoute.js";
 import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
+import analyticsRouter from "./routes/analyticsRoute.js";
 
 // App Config
 const app = express();
@@ -38,6 +39,9 @@ app.use("/cart", cartRouter);
 app.use("/api/order", orderRouter);
 app.use("/order", orderRouter);
 
+app.use("/api/analytics", analyticsRouter);
+app.use("/analytics", analyticsRouter);
+
 app.get("/", (req, res) => {
   res.send("API Working");
 });
@@ -48,7 +52,7 @@ app.get("/api", (req, res) => {
 
 if (!process.env.VERCEL) {
   app.listen(port, () => {
-    console.log("Server started on PORT:", port);
+    console.log(`Server is running on port ${port}`);
   });
 }
 
