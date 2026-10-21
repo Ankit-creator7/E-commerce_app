@@ -16,25 +16,41 @@
   },
   "rewrites": [
     {
-      "source": "/admin",
-      "destination": {
-        "service": "admin"
-      }
-    },
-    {
-      "source": "/admin/:path*",
-      "destination": {
-        "service": "admin"
-      }
-    },
-    {
-      "source": "/api/:path*",
+      "source": "/api/(.*)",
       "destination": {
         "service": "backend"
       }
     },
     {
-      "source": "/:path*",
+      "source": "/admin/assets/(.*)",
+      "destination": {
+        "service": "admin",
+        "path": "/assets/$1"
+      }
+    },
+    {
+      "source": "/admin/(favicon\\.svg|icons\\.svg)",
+      "destination": {
+        "service": "admin",
+        "path": "/$1"
+      }
+    },
+    {
+      "source": "/admin",
+      "destination": {
+        "service": "admin",
+        "path": "/index.html"
+      }
+    },
+    {
+      "source": "/admin/(.*)",
+      "destination": {
+        "service": "admin",
+        "path": "/index.html"
+      }
+    },
+    {
+      "source": "/(.*)",
       "destination": {
         "service": "frontend"
       }
