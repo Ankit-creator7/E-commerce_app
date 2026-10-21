@@ -1,88 +1,22 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "services": {
-    "admin": {
-      "root": "admin",
-      "framework": "vite"
-    },
-    "backend": {
-      "root": "backend",
-      "framework": "express"
-    },
-    "frontend": {
-      "root": "frontend",
-      "framework": "vite"
-    }
-  },
+  "outputDirectory": "dist",
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": {
-        "service": "backend"
-      }
-    },
-    {
-      "source": "/admin/assets/(.*)",
-      "destination": {
-        "service": "admin",
-        "path": "/assets/$1"
-      }
-    },
-    {
-      "source": "/admin/favicon.svg",
-      "destination": {
-        "service": "admin",
-        "path": "/favicon.svg"
-      }
-    },
-    {
-      "source": "/admin/icons.svg",
-      "destination": {
-        "service": "admin",
-        "path": "/icons.svg"
-      }
-    },
-    {
-      "source": "/admin",
-      "destination": {
-        "service": "admin",
-        "path": "/index.html"
-      }
+      "destination": "/api/index.js"
     },
     {
       "source": "/admin/(.*)",
-      "destination": {
-        "service": "admin",
-        "path": "/index.html"
-      }
+      "destination": "/admin/index.html"
     },
     {
-      "source": "/assets/(.*)",
-      "destination": {
-        "service": "frontend",
-        "path": "/assets/$1"
-      }
-    },
-    {
-      "source": "/favicon.svg",
-      "destination": {
-        "service": "frontend",
-        "path": "/favicon.svg"
-      }
-    },
-    {
-      "source": "/icons.svg",
-      "destination": {
-        "service": "frontend",
-        "path": "/icons.svg"
-      }
+      "source": "/admin",
+      "destination": "/admin/index.html"
     },
     {
       "source": "/(.*)",
-      "destination": {
-        "service": "frontend",
-        "path": "/index.html"
-      }
+      "destination": "/index.html"
     }
   ]
 }
