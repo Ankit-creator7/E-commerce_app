@@ -6,17 +6,17 @@ import Stripe from "stripe";
 const currency = "inr";
 const deliveryCharges = 10;
 
-
 //gateway initialization
 const stripe = new Stripe(process.env.STRIPE_API_KEY);
 
-
 // Placing order using COD method
-
 const placeOrder = async (req, res) => {
-
     try {
         const { userId, items, amount, address } = req.body;
+
+        if (!userId) {
+            return res.json({ success: false, message: "User session not found. Please log in." });
+        }
 
         const orderData = {
             userId,
@@ -26,7 +26,7 @@ const placeOrder = async (req, res) => {
             payment: false,
             date: Date.now(),
             address,
-        }
+        };
 
         const newOrder = new orderModel(orderData);
         await newOrder.save();
@@ -38,15 +38,18 @@ const placeOrder = async (req, res) => {
         console.log(error);
         res.json({ success: false, message: error.message });
     }
-
-}
+};
 
 // Placing order using Stripe method
 const placeOrderStripe = async (req, res) => {
-
     try {
         const { userId, items, amount, address } = req.body;
-        const { origin } = req.headers;
+
+        if (!userId) {
+            return res.json({ success: false, message: "User session not found. Please log in as a customer." });
+        }
+
+        const origin = req.headers.origin || req.headers.referer?.replace(/\/$/, '') || 'https://e-commerceapp-two.vercel.app';
 
         const orderData = {
             userId,
@@ -56,7 +59,7 @@ const placeOrderStripe = async (req, res) => {
             payment: false,
             date: Date.now(),
             address,
-        }
+        };
 
         const newOrder = new orderModel(orderData);
         await newOrder.save();
@@ -70,7 +73,8 @@ const placeOrderStripe = async (req, res) => {
                 unit_amount: item.price * 100,
             },
             quantity: item.quantity,
-        }))
+        }));
+
         line_items.push({
             price_data: {
                 currency: currency,
@@ -80,31 +84,25 @@ const placeOrderStripe = async (req, res) => {
                 unit_amount: deliveryCharges * 100,
             },
             quantity: 1,
-        })
+        });
 
         const session = await stripe.checkout.sessions.create({
-
             success_url: `${origin}/verify?success=true&orderId=${newOrder._id}`,
-            cancel_url: `${origin}/verify?canceled=false&orderId=${newOrder._id}`,
+            cancel_url: `${origin}/verify?success=false&orderId=${newOrder._id}`,
             line_items,
             mode: 'payment',
-
-        })
+        });
 
         res.json({ success: true, session_url: session.url });
-
-
 
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: error.message });
-
     }
-}
+};
 
 //Verify Stripe
 const verifyStripe = async (req, res) => {
-
     const orderId = req.body?.orderId || req.query?.orderId;
     const success = req.body?.success || req.query?.success;
     const userId = req.body?.userId || req.query?.userId;
@@ -124,21 +122,15 @@ const verifyStripe = async (req, res) => {
         console.log(err);
         res.json({ success: false, message: err.message });
     }
-
-}
-
-
+};
 
 // Placing order using Razorpay method
-
 const placeOrderRazorpay = async (req, res) => {
     res.json({ success: false, message: "Razorpay payment method is currently not configured." });
-}
+};
 
 // All Orders data for Admin panel
-
 const allOrders = async (req, res) => {
-
     try {
         const orders = await orderModel.find({});
         res.json({ success: true, orders });
@@ -146,30 +138,22 @@ const allOrders = async (req, res) => {
         console.log(error);
         res.json({ success: false, message: error.message });
     }
+};
 
-}
-
-// User Orders data for Frontend
-
+// User order data for frontend
 const userOrders = async (req, res) => {
-
     try {
-
         const { userId } = req.body;
-        const orders = await orderModel.find({ userId })
+        const orders = await orderModel.find({ userId });
         res.json({ success: true, orders });
-
     } catch (error) {
         console.log(error);
         res.json({ success: false, message: error.message });
     }
+};
 
-}
-
-// Update Order Status from Admin panel
-
+// Update order status from Admin panel
 const updateStatus = async (req, res) => {
-
     try {
         const { orderId, status } = req.body;
         await orderModel.findByIdAndUpdate(orderId, { status });
@@ -178,7 +162,6 @@ const updateStatus = async (req, res) => {
         console.log(error);
         res.json({ success: false, message: error.message });
     }
+};
 
-}
-
-export { verifyStripe, placeOrder, placeOrderStripe, placeOrderRazorpay, allOrders, userOrders, updateStatus }
+export { placeOrder, placeOrderRazorpay, placeOrderStripe, allOrders, userOrders, updateStatus, verifyStripe };

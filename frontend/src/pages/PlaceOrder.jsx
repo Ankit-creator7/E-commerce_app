@@ -34,6 +34,12 @@ const PlaceOrder = () => {
   const onSubmitHandler = async(e) => {
     e.preventDefault();
 
+    if(!token){
+      toast.error("Please login with your customer account to place an order");
+      navigate('/login');
+      return;
+    }
+
     try{
 
       let orderItems = [];
@@ -82,6 +88,9 @@ const PlaceOrder = () => {
             window.location.replace(session_url);
           } else{
             toast.error(stripeResponse.data.message);
+            if(stripeResponse.data.message?.toLowerCase().includes("login") || stripeResponse.data.message?.toLowerCase().includes("session")){
+              navigate('/login');
+            }
           }
           break;
         }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Routes,Route } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Collection from './pages/Collection'
 import PlaceOrder from './pages/PlaceOrder'
@@ -9,6 +9,7 @@ import Contact from './pages/Contact'
 import Cart from './pages/Cart'
 import Product from './pages/Product'
 import Login from './pages/Login'
+import Profile from './pages/Profile'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import SearchBar from './components/SearchBar'
@@ -31,6 +32,7 @@ const App = () => {
         <Route path='/place-order' element={<PlaceOrder/>}/>
         <Route path='/orders' element={<Orders/>}/>
         <Route path='/login' element={<Login/>}/>
+        <Route path='/profile' element={<Profile/>}/>
         <Route path='/product/:productId' element={<Product/>}/>
         <Route path='/verify' element={<Verify/>}/>
       </Routes>

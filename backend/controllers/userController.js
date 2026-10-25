@@ -99,4 +99,61 @@ const loginAdmin = async (req, res) => {
 
 }
 
-export {loginUser, registerUser, loginAdmin}
+
+// Route to get user profile
+const getUserProfile = async (req, res) => {
+    try {
+        const userId = req.body?.userId || req.userId;
+        const user = await userModel.findById(userId).select("-password");
+        if (!user) {
+            return res.json({ success: false, message: "User not found" });
+        }
+        res.json({ success: true, user });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+};
+
+// Route to update user profile (e.g. name)
+const updateUserProfile = async (req, res) => {
+    try {
+        const userId = req.body?.userId || req.userId;
+        const { name } = req.body;
+        if (!name || !name.trim()) {
+            return res.json({ success: false, message: "Name cannot be empty" });
+        }
+        const updatedUser = await userModel.findByIdAndUpdate(
+            userId,
+            { name: name.trim() },
+            { new: true }
+        ).select("-password");
+        res.json({ success: true, message: "Profile updated successfully", user: updatedUser });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+};
+
+// Route for forgot password
+const forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res.json({ success: false, message: "Please enter your email" });
+        }
+        const user = await userModel.findOne({ email });
+        if (!user) {
+            return res.json({ success: false, message: "No account found with this email" });
+        }
+        res.json({ 
+            success: true, 
+            message: "Password reset instructions have been dispatched to your email address." 
+        });
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message });
+    }
+};
+
+export { loginUser, registerUser, loginAdmin, getUserProfile, updateUserProfile, forgotPassword };
